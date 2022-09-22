@@ -99,6 +99,7 @@ const items = [
 
 const itemTemplate = document.querySelector('#item-template');
 const shopItems = document.querySelector('#shop-items');
+const nothingFound = document.querySelector('#nothing-found');
 
 function makeProductCard(shopItem) {
   const {title, description, tags, price, img, rating} = shopItem;
@@ -108,6 +109,14 @@ function makeProductCard(shopItem) {
   item.querySelector('p').textContent = description;
   item.querySelector('.price').textContent = `${price}BYN`;
   item.querySelector('img').src = img;
+
+  const ratingContainer = item.querySelector('.rating');
+
+  for (let i = 0; i < rating; i++) {
+    const star = document.createElement('i');
+    star.classList.add('fa', 'fa-star');
+    ratingContainer.append(star);
+  }
 
   const tagsContainer = item.querySelector('.tags');
 
@@ -122,10 +131,70 @@ function makeProductCard(shopItem) {
 };
 
 function makeRender(arr) {
+  nothingFound.textContent = "";
+  shopItems.innerHTML = "";
+  
   for (let item of arr) {
     shopItems.append(makeProductCard(item));
+  }
+
+  if (arr.length === 0) {
+    nothingFound.textContent = "Ничего не найдено";
   }
 };
 
 let currentItems = [...items];
-makeRender(currentItems);
+makeRender(currentItems.sort((a, b) => sortByAlphabet(a, b)));
+
+function sortByAlphabet(a, b) {
+  if (a.title > b.title) {
+    return 1;
+  }
+  if (a.title < b.title) {
+    return -1;
+  }
+  return 0;
+}
+
+const sortControl = document.querySelector("#sort");
+
+sortControl.addEventListener("change", (event) => {
+  const selectedOption = event.target.value;
+
+  switch (selectedOption) {
+    case "expensive": {
+      currentItems.sort((a, b) => b.price - a.price);
+      break;
+    }
+    case "cheap": {
+      currentItems.sort((a, b) => a.price - b.price);
+      break;
+    }
+    case "alphabet": {
+      currentItems.sort((a, b) => sortByAlphabet(a, b));
+      break;
+    }
+    case "rating": {
+      currentItems.sort((a, b) => b.rating - a.rating);
+      break;
+    }
+  }
+
+  makeRender(currentItems);
+});
+
+const searchInput = document.querySelector('#search-input');
+const searchButton = document.querySelector('#search-btn');
+
+function applySearch() {
+  const searchString = searchInput.value.trim().toLowerCase();
+
+  currentItems = items.filter((elem) => elem.title.toLowerCase().includes(searchString));
+  currentItems.sort((a, b) => sortByAlphabet(a, b));
+  sortControl.selectedIndex = 0;
+
+  makeRender(currentItems);
+}
+
+searchButton.addEventListener('click', applySearch);
+searchInput.addEventListener('search', applySearch);
