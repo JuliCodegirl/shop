@@ -24,7 +24,7 @@ const items = [
     rating: 4.1,
   },
   {
-    title: "Пианино Mommy Love 'Слонёнок'",
+    title: "Пианино 'Слонёнок'",
     description: "Создаст прекрасное настроение юному дарованию!",
     tags: ["0-1", "1-3"],
     price: 30,
@@ -116,7 +116,7 @@ function makeProductCard(shopItem) {
     const star = document.createElement('i');
     star.classList.add('fa', 'fa-star');
     ratingContainer.append(star);
-  }
+  };
 
   const tagsContainer = item.querySelector('.tags');
 
@@ -154,7 +154,7 @@ function sortByAlphabet(a, b) {
     return -1;
   }
   return 0;
-}
+};
 
 const sortControl = document.querySelector("#sort");
 
@@ -194,7 +194,7 @@ function applySearch() {
   sortControl.selectedIndex = 0;
 
   makeRender(currentItems);
-}
+};
 
 searchButton.addEventListener('click', applySearch);
 searchInput.addEventListener('search', applySearch);
